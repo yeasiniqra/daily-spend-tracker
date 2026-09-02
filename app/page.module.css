@@ -1,150 +1,65 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  min-height: 100vh;
+  background: #f3f0e9;
+  color: #17231e;
 }
 
 .main {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 64px 0 80px;
+}
+
+.header {
   display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
   justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  align-items: end;
+  border-bottom: 1px solid #cbd0c8;
+  padding-bottom: 34px;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
+.eyebrow { color: #e05f3d; font-size: 11px; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+.header h1 { font-family: Georgia, serif; font-size: clamp(48px, 7vw, 88px); font-weight: 400; line-height: .95; }
+.subtitle { color: #68726d; font-size: 16px; margin-top: 18px; }
+.totalBlock { text-align: right; }
+.totalBlock span { display: block; color: #68726d; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+.totalBlock strong { font-family: Georgia, serif; color: #e05f3d; font-size: 36px; font-weight: 400; }
+.contentGrid { display: grid; grid-template-columns: minmax(280px, 370px) 1fr; gap: 72px; padding-top: 52px; }
+.formPanel { padding-right: 40px; border-right: 1px solid #cbd0c8; }
+.panelHeading { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 32px; }
+.panelNumber { color: #e05f3d; font-size: 11px; font-weight: 800; letter-spacing: 1px; padding-top: 5px; }
+.panelHeading h2 { font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+.panelHeading p { color: #79817c; font-size: 13px; margin-top: 6px; }
+.formPanel label { display: block; color: #59635d; font-size: 12px; font-weight: 700; letter-spacing: .4px; margin-bottom: 19px; }
+.formPanel input, .formPanel select { display: block; width: 100%; border: 0; border-bottom: 1px solid #aeb7ae; border-radius: 0; background: transparent; color: #17231e; font: inherit; font-size: 16px; padding: 11px 0; outline: 0; }
+.formPanel input:focus, .formPanel select:focus { border-color: #e05f3d; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.amountInput { display: flex; align-items: center; border-bottom: 1px solid #aeb7ae; }
+.amountInput:focus-within { border-color: #e05f3d; }
+.amountInput span { color: #e05f3d; font-size: 18px; }
+.amountInput input { border-bottom: 0; }
+.formActions { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-top: 30px; }
+.formPanel button { border: 0; background: none; color: #e05f3d; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+.formPanel button:disabled { cursor: wait; opacity: .6; }
+.submitButton { background: #17231e; color: #fff; padding: 13px 21px; }
+.submitButton:hover { background: #e05f3d; }
+.cancelButton { color: #68726d; }
+.expenseList { border-top: 1px solid #cbd0c8; }
+.expenseRow { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #cbd0c8; padding: 22px 0; }
+.category { color: #e05f3d; font-size: 11px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+.expenseInfo h3 { font-family: Georgia, serif; font-size: 21px; font-weight: 400; margin: 7px 0 6px; }
+.expenseInfo time { color: #79817c; font-size: 12px; }
+.expenseControls { min-width: 115px; text-align: right; }
+.expenseControls strong { display: block; font-family: Georgia, serif; font-size: 21px; font-weight: 400; margin-bottom: 13px; }
+.expenseControls button { color: #68726d; font-size: 11px; margin-left: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.expenseControls button:hover { color: #e05f3d; }
+.emptyState, .error { padding: 24px 0; color: #79817c; font-size: 14px; }
+.error { color: #b43f2d; }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
-}
-
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
-}
-
-a.secondary {
-  border-color: var(--button-secondary-border);
-}
-
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-}
-
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
-}
-
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+@media (max-width: 760px) {
+  .main { width: min(100% - 36px, 560px); padding-top: 40px; }
+  .header { align-items: flex-start; flex-direction: column; gap: 28px; }
+  .totalBlock { text-align: left; }
+  .contentGrid { display: block; padding-top: 38px; }
+  .formPanel { border-right: 0; border-bottom: 1px solid #cbd0c8; padding: 0 0 44px; margin-bottom: 44px; }
 }
