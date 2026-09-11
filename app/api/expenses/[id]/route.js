@@ -1,31 +1,19 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
-
-async function getId(context) {
-    const params = await context.params;
-    const id = Number(params.id);
-    return Number.isInteger(id) && id > 0 ? id : null;
-}
-
-function readExpense(body) {
-    const description = typeof body.description === "string" ? body.description.trim() : "";
-    const category = typeof body.category === "string" ? body.category.trim() : "";
-    const amount = Number(body.amount);
-    const expenseDate = typeof body.expense_date === "string" ? body.expense_date : "";
-
-    if (!description || !category || !Number.isFinite(amount) || amount <= 0 || !expenseDate) {
-        return { error: "Description, category, positive amount, and date are required." };
-    }
-
-    return { value: { description, amount, category, expenseDate } };
-}
+import { readEntry } from "@/lib/validation";
+import { getRouteId } from "@/lib/params";
 
 export async function GET(_request, context) {
-    const id = await getId(context);
+    const id = await getRouteId(context);
     if (!id) return NextResponse.json({ error: "Invalid expense id" }, { status: 400 });
 
     try {
-        const result = await pool.query("SELECT * FROM expenses WHERE id = $1", [id]);
+        const result = await pool.query(
+            `SELECT e.id, e.description, e.amount, e.expense_date, e.category_id, c.name AS category
+             FROM expenses e JOIN categories c ON c.id = e.category_id
+             WHERE e.id = $1`,
+            [id]
+        );
         if (!result.rowCount) return NextResponse.json({ error: "Expense not found" }, { status: 404 });
         return NextResponse.json(result.rows[0]);
     } catch (error) {
@@ -35,32 +23,35 @@ export async function GET(_request, context) {
 }
 
 export async function PUT(request, context) {
-    const id = await getId(context);
+    const id = await getRouteId(context);
     if (!id) return NextResponse.json({ error: "Invalid expense id" }, { status: 400 });
 
     try {
-        const parsed = readExpense(await request.json());
+        const parsed = readEntry(await request.json(), "expense_date");
         if (parsed.error) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
-        const { description, amount, category, expenseDate } = parsed.value;
+        const { description, amount, categoryId, date } = parsed.value;
         const result = await pool.query(
             `UPDATE expenses
-             SET description = $1, amount = $2, category = $3, expense_date = $4
+             SET description = $1, amount = $2, category_id = $3, expense_date = $4
              WHERE id = $5
              RETURNING *`,
-            [description, amount, category, expenseDate, id]
+            [description, amount, categoryId, date, id]
         );
 
         if (!result.rowCount) return NextResponse.json({ error: "Expense not found" }, { status: 404 });
         return NextResponse.json(result.rows[0]);
     } catch (error) {
+        if (error.code === "23503") {
+            return NextResponse.json({ error: "Selected category does not exist." }, { status: 400 });
+        }
         console.error("DATABASE ERROR:", error);
         return NextResponse.json({ error: "Failed to update expense" }, { status: 500 });
     }
 }
 
 export async function DELETE(_request, context) {
-    const id = await getId(context);
+    const id = await getRouteId(context);
     if (!id) return NextResponse.json({ error: "Invalid expense id" }, { status: 400 });
 
     try {

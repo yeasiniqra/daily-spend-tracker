@@ -14,51 +14,51 @@ export async function GET(request) {
 
     if (categoryId) {
         values.push(Number(categoryId));
-        conditions.push(`e.category_id = $${values.length}`);
+        conditions.push(`i.category_id = $${values.length}`);
     }
     if (from) {
         values.push(from);
-        conditions.push(`e.expense_date >= $${values.length}`);
+        conditions.push(`i.income_date >= $${values.length}`);
     }
     if (to) {
         values.push(to);
-        conditions.push(`e.expense_date <= $${values.length}`);
+        conditions.push(`i.income_date <= $${values.length}`);
     }
     if (search) {
         values.push(`%${search}%`);
-        conditions.push(`e.description ILIKE $${values.length}`);
+        conditions.push(`i.description ILIKE $${values.length}`);
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     try {
         const result = await pool.query(
-            `SELECT e.id, e.description, e.amount, e.expense_date, e.category_id,
+            `SELECT i.id, i.description, i.amount, i.income_date, i.category_id,
                     c.name AS category, c.color AS category_color
-             FROM expenses e
-             JOIN categories c ON c.id = e.category_id
+             FROM incomes i
+             JOIN categories c ON c.id = i.category_id
              ${where}
-             ORDER BY e.expense_date DESC, e.id DESC`,
+             ORDER BY i.income_date DESC, i.id DESC`,
             values
         );
 
         return NextResponse.json(result.rows);
     } catch (error) {
         console.error("DATABASE ERROR:", error);
-        return NextResponse.json({ error: "Failed to fetch expenses" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch income" }, { status: 500 });
     }
 }
 
 export async function POST(request) {
     try {
-        const parsed = readEntry(await request.json(), "expense_date");
+        const parsed = readEntry(await request.json(), "income_date");
         if (parsed.error) {
             return NextResponse.json({ error: parsed.error }, { status: 400 });
         }
 
         const { description, amount, categoryId, date } = parsed.value;
         const result = await pool.query(
-            `INSERT INTO expenses (description, amount, category_id, expense_date)
+            `INSERT INTO incomes (description, amount, category_id, income_date)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
             [description, amount, categoryId, date]
@@ -70,6 +70,6 @@ export async function POST(request) {
             return NextResponse.json({ error: "Selected category does not exist." }, { status: 400 });
         }
         console.error("DATABASE ERROR:", error);
-        return NextResponse.json({ error: "Failed to create expense" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create income" }, { status: 500 });
     }
 }

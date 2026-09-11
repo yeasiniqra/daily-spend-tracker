@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Daily spend | Portfolio project",
-  description: "A calm, full-stack personal finance tracker built with Next.js and PostgreSQL.",
+  title: "Daily Spend Tracker",
+  description: "A small, full-stack expense and income dashboard built with Next.js and PostgreSQL.",
 };
 
 export default function RootLayout({ children }) {

@@ -1,0 +1,17 @@
+.banner {
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+}
+
+.danger {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.success {
+    background: var(--success-soft);
+    color: var(--success);
+}
